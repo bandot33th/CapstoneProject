@@ -1,31 +1,84 @@
 // server.js
-
+const admin = require('firebase-admin');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
+
 
 const app = express();
 const port = process.env.PORT || 3000;
 const secretKey = 'no more waste';
 
+// Initialize Firebase Admin SDK
+const serviceAccount = require('./serviceaccountkeyfirebase.json'); // Path to your Firebase Admin SDK key
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
 app.use(bodyParser.json());
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
   
-    // Hardcoded example credentials
-    const validUsername = 'admin';
-    const validPassword = 'admin';
+    try {
+        // Query Firestore to find the user with the provided username
+        const userDoc = await admin.firestore().collection('user').doc(username).get();
+
+        // Check if the user exists and compare hashed passwords
+         if (userDoc.exists) {
+        const hashedPassword = userDoc.data().password;
   
-    // Perform authentication logic
-    if (username === validUsername && password === validPassword) {
-      const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
-      res.json({ token });
-    } else {
-      res.status(401).json({ error: 'Wrong username or password' });
+        // Compare hashed passwords using bcrypt
+        const passwordsMatch = await bcrypt.compare(password, hashedPassword);
+         
+        // Check if the user exists and the password is correct
+        if (passwordsMatch) {
+          const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
+          res.json({ token });
+        } else {
+          res.status(401).json({ error: 'Invalid credentials' });
+        }} 
+        }catch (error) {
+        console.error(error);
+        res.status(500).json({ error: `Internal server error, details: ${error}` });
+      }
+    });
+
+app.post('/register', async (req, res) => {
+    const { username, password, password2 } = req.body;
+
+    //Check if the password is typed correctly
+    if (password !== password2){
+        return res.status(400).json({ error: 'Password not matching'});
     }
-  });
+    
+    // Check if the username already exists
+    const userExists = await checkIfUsernameExists(username);
+    
+    if (userExists) {
+        return res.status(400).json({ error: 'Username already in use' });
+    }
+    
+    // Hash the password before storing it
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    // Save the username and hashed password to Firestore
+    await saveUser(username, hashedPassword);
+    
+    res.json({ success: true });
+    });
   
+async function checkIfUsernameExists(username) {
+    const userDoc = await admin.firestore().collection('user').doc(username).get();
+    return userDoc.exists;
+    }
+      
+async function saveUser(username, hashedPassword) {
+    await admin.firestore().collection('user').doc(username).set({ password: hashedPassword, created_at: new Date() });
+    }
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://0.0.0.0:${port}`);
