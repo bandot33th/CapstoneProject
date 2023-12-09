@@ -35,13 +35,13 @@ app.post('/login', async (req, res) => {
         // Check if the user exists and the password is correct
         if (passwordsMatch) {
           const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
-          res.json({ token });
+          res.json({ token, error: 'false'});
         } else {
-          res.status(401).json({ error: 'Invalid credentials' });
+          res.status(401).json({ error: 'Invalid credentials', error: 'true', token: '' });
         }} 
         }catch (error) {
         console.error(error);
-        res.status(500).json({ error: `Internal server error, details: ${error}` });
+        res.status(500).json({ error: `Internal server error, details: ${error}`, error: 'true', token: '' });
       }
     });
 
@@ -50,14 +50,14 @@ app.post('/register', async (req, res) => {
 
     //Check if the password is typed correctly
     if (password !== password2){
-        return res.status(400).json({ error: 'Password not matching'});
+        return res.status(400).json({ error: 'Password not matching', error: 'true', token: ''});
     }
     
     // Check if the username already exists
     const userExists = await checkIfUsernameExists(username);
     
     if (userExists) {
-        return res.status(400).json({ error: 'Username already in use' });
+        return res.status(400).json({ error: 'Username already in use', error: 'true', token: ''});
     }
     
     // Hash the password before storing it
@@ -66,7 +66,7 @@ app.post('/register', async (req, res) => {
     // Save the username and hashed password to Firestore
     await saveUser(username, hashedPassword);
     
-    res.json({ success: true });
+    res.json({ success: true, error: 'false', token});
     });
   
 async function checkIfUsernameExists(username) {
@@ -88,7 +88,7 @@ const verifyToken = (req, res, next) => {
     const token = req.headers.authorization;
   
     if (!token) {
-      return res.status(403).json({ error: 'No token provided' });
+      return res.status(403).json({ error: 'No token provided'});
     }
   
     jwt.verify(token, secretKey, (err, decoded) => {
