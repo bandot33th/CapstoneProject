@@ -35,13 +35,13 @@ app.post('/login', async (req, res) => {
         // Check if the user exists and the password is correct
         if (passwordsMatch) {
           const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
-          res.json({ token, error: 'false'});
+          res.json({ token, error: false});
         } else {
-          res.status(401).json({ token: '', error: 'true});
+          res.status(401).json({ token: '', error: true});
         }} 
         }catch (error) {
         console.error(error);
-        res.status(500).json({ error: `Internal server error, details: ${error}`, error: 'true', token: '' });
+        res.status(500).json({ error: true, token: '' });
       }
     });
 
@@ -50,14 +50,14 @@ app.post('/register', async (req, res) => {
 
     //Check if the password is typed correctly
     if (password !== password2){
-        return res.status(400).json({ error: 'true'});
+        return res.status(400).json({ error: true});
     }
     
     // Check if the username already exists
     const userExists = await checkIfUsernameExists(username);
     
     if (userExists) {
-        return res.status(400).json({ error: 'true'});
+        return res.status(400).json({ error: true});
     }
     
     // Hash the password before storing it
@@ -66,7 +66,7 @@ app.post('/register', async (req, res) => {
     // Save the username and hashed password to Firestore
     await saveUser(username, hashedPassword);
     
-    res.json({error: 'false'});
+    res.json({error: false});
     });
   
 async function checkIfUsernameExists(username) {
