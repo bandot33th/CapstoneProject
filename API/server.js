@@ -37,7 +37,7 @@ app.post('/login', async (req, res) => {
           const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
           res.json({ token, error: 'false'});
         } else {
-          res.status(401).json({ error: 'Invalid credentials', error: 'true', token: '' });
+          res.status(401).json({ token: '', error: 'true});
         }} 
         }catch (error) {
         console.error(error);
@@ -50,14 +50,14 @@ app.post('/register', async (req, res) => {
 
     //Check if the password is typed correctly
     if (password !== password2){
-        return res.status(400).json({ error: 'Password not matching', error: 'true', token: ''});
+        return res.status(400).json({ error: 'true'});
     }
     
     // Check if the username already exists
     const userExists = await checkIfUsernameExists(username);
     
     if (userExists) {
-        return res.status(400).json({ error: 'Username already in use', error: 'true', token: ''});
+        return res.status(400).json({ error: 'true'});
     }
     
     // Hash the password before storing it
@@ -66,7 +66,7 @@ app.post('/register', async (req, res) => {
     // Save the username and hashed password to Firestore
     await saveUser(username, hashedPassword);
     
-    res.json({ success: true, error: 'false', token});
+    res.json({error: 'false'});
     });
   
 async function checkIfUsernameExists(username) {
