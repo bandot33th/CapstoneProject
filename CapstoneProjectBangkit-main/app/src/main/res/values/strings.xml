@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Capstone Project</string>
+    <string name="welcome_to">WELCOME TO</string>
+    <string name="iwaste">iWaste</string>
+    <string name="username">USERNAME</string>
+    <string name="login">LOGIN</string>
+    <string name="logout">LOGOUT</string>
+    <string name="register">REGISTER</string>
+    <string name="password">PASSWORD</string>
+    <string name="name">NAME</string>
+    <string name="register_screen">Personal Identity</string>
+    <string name="register_guide">Please enter your username correctly and \nenter the password you want. </string>
+    <string name="login_screen">Enter</string>
+    <string name="login_guide">Please log in with the registered username. </string>
+    <string name="title_home">Home</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_scan">Scan</string>
+    <string name="scan_trash">Trash Scanner</string>
+    <string name="user_profile">Trash Scanner</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="scan">Scan</string>
+    <string name="empty_image_warning">Tidak Ada Gambar\n</string>
+</resources>
