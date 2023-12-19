@@ -9,11 +9,12 @@ ML API deploy using compute engine
 2. create the firewall rules for http/https
 3. connect to the ssh and update package
 4. install the necessary library
-   ```
+   
+```
 sudo apt update
 sudo apt install python3 python3-pip
-pip install flask tensorflow ...
-  ```
+pip install flask tensorflow numpy google-cloud-storage google-cloud-firestore
+```
   
 6. install screen
 7. create service account key
