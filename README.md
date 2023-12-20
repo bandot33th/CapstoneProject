@@ -8,13 +8,13 @@ Waste management is a major issue on a global scale nowadays. As urbanization an
   - TensorFlow
   - Jupyter Notebook
 - Cloud Computing
- - NodeJS
- - VSCode
- - Firestore
+  - NodeJS
+  - VSCode
+  - Firestore
 - Mobile Development
- - Android Studio
- - Kotlin
- - Figma
+  - Kotlin
+  - Android Studio
+  - Figma
 
 ## Team Member:
 - M180BSX1536 – Cyrilla Reyda Irvandy – University Airlangga - Machine Learning - [active]
